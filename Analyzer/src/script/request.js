@@ -138,5 +138,4 @@ function RequestData() {
                     strs.push(i.substr(1) + "=" + data[i][j]);
         return strs.join("&");
     };
-
 }

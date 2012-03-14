@@ -23,6 +23,8 @@ var defStatus = 'By <a href="http://www.vilic.info/" target="_blank" title="Clic
 var accountFile = 'app:account';
 var sidFile = 'app:sid';
 
+var debug = docStorage.resolvePath("vilic_analyzer_debug").exists;
+
 /*
 var loader = new air.URLLoader();
 var request = new air.URLRequest("http://localhost:55600/Test/t.ashx");
@@ -74,6 +76,8 @@ window.onload = function () {
         cnzz.src = "http://www.vilic.info/aiesec/tnfa/cnzz.html?v=" + version.ver;
 
     setTimeout(function () {
+        var updateInfoUrl = "http://www.vilic.info/aiesec/analyzer/version.json";
+
         sendRequest("get", "http://www.vilic.info/aiesec/analyzer/version.json", "", function (text) {
             onlineVer = eval("(" + text + ")");
             //latest version
@@ -250,9 +254,15 @@ function exportData() {
         });
 
         function formatString(str) {
-            return str.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/^[\s\S]*[\r\n",][\s\S]*$/, function (m) {
-                return '"' + m.replace(/"/g, '""') +'"';
+            str = str.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
+            str = str.replace(/^[\s\S]*[\r\n",][\s\S]*$/, function (m) {
+                return '"' + m.replace(/"/g, '""') + '"';
             });
+            str = str.replace(/^[\d\.]+$/g, function (m) {
+                return '="' + m + '"';
+            });
+
+            return str;
         }
 
     };
