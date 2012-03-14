@@ -81,7 +81,7 @@ window.onload = function () {
         sendRequest("get", gitBaseUrl + "ver.json", "", function (json) {
             var onlineVer = JSON.parse(json);
             if (onlineVer.verCount > version.verCount) {
-                var force = onlineVer.forceUpdate;
+                var force = onlineVer.forceUpdate >= version.verCount;
                 var msg = "A newer version(" + onlineVer.verString + ") is now available, " + (force ? "you'll have to update before you can continue using Analyzer." : "click OK to update.");
                 if (onlineVer.description)
                     msg += "\n\nDescription:\n" + onlineVer.description;
