@@ -1,8 +1,8 @@
 ﻿/// <reference path="AIRAliases.js" />
 var version = {
-    ver: "1.5.0",
-    verString: "1.5 Beta",
-    verCount: 22
+    ver: "1.5.1",
+    verString: "1.5.1 Beta",
+    verCount: 23
 };
 
 var onlineVer;
