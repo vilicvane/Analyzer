@@ -1,7 +1,8 @@
 ﻿{
+	"ver": "1.5.0",
 	"verString": "1.5 Beta",
 	"verCount": 22,
-	"description": ""
-	"forceUpdate": false
-	"fn": (function () { })();
+	"description": "",
+	"forceUpdate": false,
+	"fn": (function () { })()
 }

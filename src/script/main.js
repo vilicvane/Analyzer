@@ -1,7 +1,8 @@
 ﻿/// <reference path="AIRAliases.js" />
 var version = {
-    ver: "1.5",
-    count: 22
+    ver: "1.5.0",
+    verString: "1.5 Beta",
+    verCount: 21 //22
 };
 
 var onlineVer;
@@ -24,6 +25,7 @@ var accountFile = 'app:account';
 var sidFile = 'app:sid';
 
 var debug = docStorage.resolvePath("vilic_analyzer_debug").exists;
+var gitBaseUrl = "https://raw.github.com/vilic/Analyzer/" + (debug ? "dev/" : "master/");
 
 /*
 var loader = new air.URLLoader();
@@ -76,20 +78,15 @@ window.onload = function () {
         cnzz.src = "http://www.vilic.info/aiesec/tnfa/cnzz.html?v=" + version.ver;
 
     setTimeout(function () {
-        var updateInfoUrl = "http://www.vilic.info/aiesec/analyzer/version.json";
 
-        sendRequest("get", "http://www.vilic.info/aiesec/analyzer/version.json", "", function (text) {
-            onlineVer = eval("(" + text + ")");
-            //latest version
-            if (onlineVer.latest.count > version.count) {
-                var nvs = onlineVer.latest.ver;
-                defStatus = '<a href="#" onclick="update(true);">NEWer version (' + nvs + ') available.</a>';
-                statusBox.reset();
-            }
-            //latest stable version
-            if (onlineVer.count > version.count) {
-                if (confirm("A new stable version(" + onlineVer.ver + ") is now available, click OK to update."))
-                    update(false);
+        sendRequest("get", gitBaseUrl + "ver.json", "", function (json) {
+            onlineVer = eval("(" + json + ")");
+            if (onlineVer.verCount > version.verCount) {
+                var msg = "A newer version(" + onlineVer.ver + ") is now available, click OK to update.";
+                if (onlineVer.description)
+                    msg += "\n\nDescription:\n" + onlineVer.description;
+                if (confirm(msg))
+                    update(onlineVer.ver);
             }
         });
     }, 500);
@@ -349,10 +346,6 @@ function trim(str) {
     return str.replace(/(^\s+|\s+$)/g, "");
 }
 
-function getVerStr(version) {
-    return version.ver;
-}
-
 function getDate() {
     var date = new Date(),
         y = date.getFullYear(),
@@ -386,13 +379,7 @@ function insertUnique(arr, value) {
 
 //--------------------------
 
-function update(latest) {
-    var shell = new ActiveXObject("WScript.Shell");
-    var ver = latest ? onlineVer.latest : onlineVer;
-
-    if (confirm("Click OK to update automatically or Cancel to download manually.")) {
-        shell.run('cscript /nologo source\\update.js "' + ver.update + '"');
-        exit(true);
-    }
-    else shell.run('explorer "' + ver.url + '"');
+function update(ver) {
+    var updater = new air.Updater();
+    updater.update(new air.File(gitBaseUrl + "analyzer.air", ver));
 }
