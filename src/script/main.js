@@ -78,9 +78,14 @@ window.onload = function () {
         cnzz.src = "http://www.vilic.info/aiesec/tnfa/cnzz.html?v=" + version.ver;
 
     setTimeout(function () {
-
         sendRequest("get", gitBaseUrl + "ver.json", "", function (json) {
-            onlineVer = eval("(" + json + ")");
+            alert("...");
+            try {
+                var onlineVer = JSON.parse(json);
+            } catch (e) {
+                air.trace(e);
+            }
+            alert("...");
             if (onlineVer.verCount > version.verCount) {
                 var msg = "A newer version(" + onlineVer.ver + ") is now available, click OK to update.";
                 if (onlineVer.description)

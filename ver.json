@@ -3,6 +3,5 @@
 	"verString": "1.5 Beta",
 	"verCount": 22,
 	"description": "",
-	"forceUpdate": false,
-	"fn": (function () { })()
+	"forceUpdate": false
 }
