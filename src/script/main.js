@@ -22,23 +22,9 @@ var noConn = false;
 
 var defStatus = 'By <a href="http://www.vilic.info/" target="_blank" title="Click to visit VILIC\'s Blog (Chinese).">VILIC@CQU</a>';
 var accountFile = 'app:account';
-var sidFile = 'app:sid';
 
 var debug = docStorage.resolvePath("vilic_analyzer_debug").exists;
 var gitBaseUrl = "https://raw.github.com/vilic/Analyzer/" + (debug ? "dev/" : "master/");
-
-/*
-var loader = new air.URLLoader();
-var request = new air.URLRequest("http://localhost:55600/Test/t.ashx");
-request.requestHeaders.push(new air.URLRequestHeader("Referer", "http://www.vilic.info"));
-loader.load(request);
-loader.addEventListener("complete", function () {
-    var xhr = new XMLHttpRequest();
-    xhr.open("get", "http://localhost:55600/Test/t.ashx");
-    xhr.setRequestHeader("Referer", "http://vilic.info");
-    xhr.send();
-});
-*/
 
 (function () {
     var info;
