@@ -1,0 +1,118 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Settings</title>
+    <link href="style/iframe.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+        button { width: 80px; margin: 0px 2px; }
+        #bt_box { text-align: center; }
+    </style>
+    <script type="text/javascript">
+        window.onload = function () {
+            top.idToVar(window);
+            var saved;
+
+            var user = top.user;
+
+            account.value = user.account;
+            password.value = user.password;
+
+            setInterval(function () {
+                if (!saved) return;
+                if (account.value != user.account || password.value != user.password) {
+                    saved = false;
+                    save_bt.innerHTML = "Save";
+                    save_bt.disabled = false;
+                }
+            }, 10);
+
+            save_bt.onclick = function () {
+                var are = /^[a-z0-9]+([\._-][a-z0-9]+)*@[a-z0-9]+([\.-][a-z0-9]+)*\.[a-z]{2,}$/i;
+
+                var a = account.value.replace(/^\s+|\s+$/g, "");
+
+                if (!are.test(a)) {
+                    alert("Please enter a legal account.");
+                    account.focus();
+                    account.select();
+                    return;
+                }
+
+                var p = password.value;
+
+                if (p.length < 8) {
+                    alert("Please enter a legal password.");
+                    password.focus();
+                    password.select();
+                    return;
+                }
+
+                top.writeFile(top.accountFile, btoa(a + "\n" + p));
+
+                user.account = a;
+                user.password = p;
+
+                top.fns["import"].exec();
+            };
+
+            forget_bt.onclick = function () {
+                account.value = user.account = "";
+                password.value = user.password = "";
+                top.writeFile(top.accountFile, "");
+            };
+
+            version_box.innerHTML += top.version.ver;
+
+            turnSaved();
+
+            function turnSaved() {
+                saved = true;
+                save_bt.innerHTML = "Saved";
+                save_bt.disabled = true;
+            }
+        };
+    </script>
+</head>
+<body>
+<div class="holder200">
+    <div class="title">Settings</div>
+    <div class="field separator">
+        <div class="left">Account</div>
+        <div class="right"><input id="account" /></div>
+        <div class="clear"></div>
+    </div>
+    <div class="field">
+        <div class="left">Password</div>
+        <div class="right"><input id="password" type="password" /></div>
+        <div class="clear"></div>
+    </div>
+    <div class="field separator">
+        <div class="single">
+            <div class="subtitle">Notice</div>
+            The information will be saved encoded, but it's decodable by others.<br />
+            Generally, there's nothing to worry about, but I think you should know it.
+        </div>
+    </div>
+    <div id="bt_box" class="field separator">
+        <button id="save_bt"></button>
+        <button id="forget_bt">Forget</button>
+    </div>
+    <div class="field separator">
+        <div class="single">
+            <div class="subtitle">About Analyzer</div>
+        </div>
+    </div>
+    <div class="field">
+        <div id="version_box" class="single">
+            Version
+        </div>
+    </div>
+    <div class="field">
+        <div class="single">
+            Any feedback to <a href="mailto:i@vilic.info">i@vilic.info</a>.
+        </div>
+    </div>
+</div>
+</body>
+</html>

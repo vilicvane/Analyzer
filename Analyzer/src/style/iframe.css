@@ -1,0 +1,42 @@
+﻿html { }
+body { margin: 0px; font-family: Arial; font-size: 10px; color: #999999; text-align: center; }
+
+a { color: #666666; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.holder400, .holder200 { position: relative; margin: auto; padding: 10px 0px; text-align: left; }
+.holder400 { width: 400px; }
+.holder200 { width: 200px; }
+
+.field { padding: 2px; }
+.field .required { color: #FF9933; }
+
+.field .left { float: left; padding-top: 2px; text-indent: 5px; }
+.field .right { float: left; }
+
+.field .single { padding: 0px 5px; }
+
+.holder400 .field .left { width: 120px; }
+.holder400 .field .right span { position: relative; top: -2px; }
+
+.holder200 .field .left { width: 60px; }
+.holder200 .field .right { }
+
+.holder400 .field input[type="text"] { width: 180px; }
+.holder200 .field input { width: 120px; }
+
+.field input[type="checkbox"], .field input[type="radio"] { position: relative; top: 2px; left: -4px; margin-right: -4px; }
+
+.separator { border-top: solid 1px #CCCCCC; padding-top: 10px; margin-top: 10px; }
+
+input, select { color: #999999; font-size: 10px; }
+
+button { color: #666666; font-size: 10px; }
+
+.clear { clear: both; }
+
+.title { color: #666666; font-size: 12px; font-weight: bold; }
+.subtitle { padding-bottom: 3px; color: #666666; font-size: 10px; font-weight: bold; }
+
+.wait { position: fixed; width: 100%; height: 100%; left: 0px; top: 0px; background-color: #FFFFFF; opacity: 0.5; }
+.waitimg { position: fixed; width: 40px; height: 20px; left: 50%; top: 50%; margin-left: -20px; margin-top: -10px; background-image: url(wait.gif); }

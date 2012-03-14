@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Import</title>
+    <link href="style/iframe.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+        #mode_box { float: right; margin-top: 2px; }
+        #form_status { text-align: center; }
+        .holder200 .bt_field { text-align: center; padding: 2px 0px; }
+        .subtitle { margin-bottom: 5px; }
+        #file_box input, button { width: 140px; }
+    </style>
+    <script type="text/javascript">
+        window.onload = function () {
+            top.idToVar(window);
+            setStatus();
+            setMode();
+
+            browse_bt.onclick = function () {
+                if (confirmImport())
+                    return false;
+
+                var obj = top.docStorage.resolvePath("");
+                obj.browseForOpen("Import");
+                obj.addEventListener("select", function (e) {
+                    var file = e.target;
+                    var data = top.readFile(file);
+                    var count = (data.match(/([\r?\n]|^)-{50}([\r?\n][\s\S]*?)(?=[\r?\n]-{50}[\r?\n]|$)/g) || []).length;
+                    if (!count)
+                        alert("Oops! This may not be an available form data file for Analyzer.");
+                    else {
+                        top.setFormInfo(data, count);
+                        setStatus();
+                    }
+                });
+
+            };
+
+            mode_bt.onclick = function () {
+                top.appendMode = !top.appendMode;
+                setMode();
+            };
+
+            search_bt.onclick = function () {
+                if (confirmImport())
+                    return false;
+                top.fns['search'].exec();
+            };
+
+            function confirmImport() {
+                return !top.appendMode && top.formCount && !confirm("To import will clear ready forms. Continue?");
+            }
+
+            function setMode() {
+                mode_bt.innerHTML = top.appendMode ? "Append Mode" : "Overwrite Mode";
+            }
+
+            function setStatus() {
+                var fc = top.formCount;
+                form_status.innerHTML = fc ? (fc > 1 ? "There're " + fc + " forms ready." : "There's 1 form ready.") : "There's no form ready yet.";
+            }
+        };
+    </script>
+</head>
+<body>
+<div class="holder200">
+    <div id="mode_box"><a id="mode_bt" href="#" title="Click to change.">Append</a></div>
+    <div class="title">Import</div>
+    <div class="field separator">
+        <div id="form_status"></div>
+    </div>
+    <div class="field separator">
+        <div class="subtitle">Search MyAIESEC.net</div>
+        <div class="single bt_field">
+            <button id="search_bt">Search Interships</button>
+        </div>
+    </div>
+    <div class="field separator">
+        <div class="subtitle">Or import from a file</div>
+        <div class="single bt_field">
+            <button id="browse_bt">Browse</button>
+        </div>
+    </div>
+</div>
+</body>
+</html>

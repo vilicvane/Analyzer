@@ -1,0 +1,85 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Export</title>
+    <link href="style/iframe.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+        .subtitle { margin: 8px 0px 0px 5px; }
+        .list_item { padding-left: 10px; }
+        .list_cb { width: auto!important; position: relative; top: 2px; }
+        
+        #select_box { float: right; margin-top: 2px; }
+        #select_box a { color: #999999; }
+        #items_box { padding-top: 0px; }
+        
+        #op_box { text-align: center; }
+        #ok_bt { width: 80px; }
+    </style>
+    <script type="text/javascript">
+        window.onload = function () {
+            top.idToVar(window);
+
+            var tree = top.exportDataTree;
+
+            var checks = [];
+            var items = [];
+            var cnt = 0;
+
+            for (var bi in tree) {
+                var b = tree[bi];
+                if (typeof b == "function" || b.length == 0) continue;
+
+                var cH = document.createElement("div");
+                cH.className = "subtitle";
+                cH.innerHTML = bi;
+                items_box.appendChild(cH);
+
+                for (var i = 0; i < b.length; ++i) {
+                    var iname = "item_" + cnt++;
+                    var cI = document.createElement("div");
+                    cI.className = "list_item";
+                    cI.innerHTML = '<input id="' + iname + '" class="list_cb" type="checkbox" /> <label for="' + iname + '">' + b[i].replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/ \(.*\)$/, "") + "</label>";
+                    checks.push(cI.firstChild);
+                    items.push(b[i]);
+                    items_box.appendChild(cI);
+                }
+            }
+
+            select_all.onclick = function () {
+                for (var i = 0; i < checks.length; i++)
+                    checks[i].checked = true;
+            };
+
+            select_none.onclick = function () {
+                for (var i = 0; i < checks.length; i++)
+                    checks[i].checked = false;
+            };
+
+            ok_bt.onclick = function () {
+                var checked = [];
+                for (var i = 0; i < checks.length; ++i)
+                    if (checks[i].checked) checked.push(items[i]);
+
+                if (!checked.length) {
+                    alert("Please check at least one item.");
+                    return;
+                }
+
+                top.exportHandle(checked);
+            };
+
+        };
+    </script>
+</head>
+<body>
+    <div id="holder" class="holder400">
+        <div id="select_box">Select <a id="select_all" href="#">All</a>/<a id="select_none" href="#">None</a></div>
+        <div class="title">Export</div>
+        <div id="items_box" class="field separator"></div>
+        <div id="op_box" class="field separator">
+            <button id="ok_bt">OK</button>
+        </div>
+    </div>
+</body>
+</html>

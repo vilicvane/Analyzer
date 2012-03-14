@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<application xmlns="http://ns.adobe.com/air/application/3.1">
+  <id>groinup.aiesec.analyzer</id>
+  <versionNumber>1.5.0</versionNumber>
+  <filename>AIESEC Form Analyzer</filename>
+  <name>AIESEC Form Analyzer</name>
+  <description>A form collector for myaiesec.net.</description>
+  <copyright>©2012 Gorinup Studio</copyright>
+  <initialWindow>
+    <content>src/analyzer.html</content>
+    <visible>true</visible>
+    <height>200</height>
+    <width>360</width>
+    <maximizable>false</maximizable>
+    <resizable>false</resizable>
+  </initialWindow>
+  <icon>
+    <image16x16>src/icon/16.png</image16x16>
+    <image32x32>src/icon/32.png</image32x32>
+    <image48x48>src/icon/48.png</image48x48>
+    <image128x128>src/icon/128.png</image128x128>
+  </icon>
+</application>

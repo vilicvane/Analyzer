@@ -1,0 +1,69 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Tools</title>
+    <link href="style/iframe.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+        .field { text-align: center; }
+        button { width: 120px; margin: 3px 0px; }
+    </style>
+    <script type="text/javascript">
+        var text = top.formData;
+
+        var tools = [
+            {
+                name: "Join Emails",
+                fn: function (text) {
+                    var re = /([a-z0-9]+(?:[\._-][a-z0-9]+)*@[a-z0-9]+(?:[\.-][a-z0-9]+)*\.[a-z]{2,})/ig,
+                        emails = text.match(re) || [];
+
+                    var hash = {};
+                    var arr = [];
+                    for (var i = 0; i < emails.length; i++) {
+                        var email = emails[i];
+                        if (!hash.hasOwnProperty(email)) {
+                            hash[email] = true;
+                            arr.push(email);
+                        }
+                    }
+
+                    top.air.Clipboard.generalClipboard.setData("air:text", arr.join(";"));
+                    alert("Emails have been copied to clipboard.");
+                }
+            }
+        ];
+
+        /************************************************/
+
+            window.onload = function () {
+                for (var i = 0; i < tools.length; i++) {
+                    (function () {
+                        var fn = tools[i].fn;
+                        var bt = document.createElement("button");
+
+                        bt.innerHTML = tools[i].name;
+                        bt.onclick = function () {
+                            var n = this.innerHTML;
+                            bt.innerHTML = "Running";
+                            bt.disabled = true;
+                            setTimeout(function () {
+                                text = top.formData = fn(text) || text;
+                                bt.innerHTML = n;
+                                bt.disabled = false;
+                            }, 0);
+                        };
+                        tools_box.appendChild(bt);
+                    })();
+
+                }
+            };
+    </script>
+</head>
+<body>
+<div class="holder200">
+    <div class="title">Tools</div>
+    <div id="tools_box" class="field separator"></div>
+</div>
+</body>
+</html>
