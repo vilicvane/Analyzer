@@ -155,8 +155,8 @@ window.onload = function () {
             holder.style.height = (oh += dh) + "px";
             if (dw || dh)
             {
-                win.x -= dw / 2;
-                win.y -= dh / 2;
+                //win.x -= dw / 2;
+                //win.y -= dh / 2;
                 win.width += dw;
                 win.height += dh;
             }
@@ -292,7 +292,7 @@ function search() {
 
 function exit(force) {
     if (force || confirm("Are you sure you want to exit?"))
-        close();
+        air.NativeApplication.nativeApplication.exit();
     else return false;
 }
 

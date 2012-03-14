@@ -14,12 +14,6 @@ var xhrs = [];
 
         logining = true;
 
-        /*
-        var data = new RequestData();
-        data.add("userName", user.account);
-        data.add("password", user.password);
-        */
-
         var data = new air.URLVariables();
         data.userName = user.account;
         data.password = user.password;
@@ -27,11 +21,6 @@ var xhrs = [];
         loginMain();
 
         function loginMain () {
-            //writeFile('app:login', '');
-            //var sid = myaiesec.contentWindow.document.cookie.match(/JSESSIONID=(.+?)(?:;|$)/)[1];
-
-            //var shell = new ActiveXObject("WScript.Shell");
-            //shell.run('source\\login.js "' + sid + '" "' + data + '"');
 
             var loader = new air.URLLoader();
             var request = new air.URLRequest("http://www.myaiesec.net/login.do");
@@ -51,21 +40,6 @@ var xhrs = [];
 
             xhrs.push(loader);
 
-
-            /*
-            var interval = setInterval(function () {
-                var text = readFile('source\\login');
-                if (!text) return;
-                clearInterval(interval);
-
-                logining = false;
-                for (var i = 0; i < queue.length; i++)
-                    try {
-                        queue[i]();
-                    } catch (e) { }
-                queue.length = 0;
-            }, 100);
-            */
             statusBox.set("Logging in...");
         }
     };
