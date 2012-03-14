@@ -97,7 +97,6 @@ window.onload = function () {
         "save": { bt: save_bt, isAvail: function () { return formCount > 0 && user.account; }, exeFn: saveData },
         "tools": { bt: tools_bt, isAvail: function () { return formCount > 0 && user.account; }, src: "tools.html", exeFn: showTools },
         "settings": { bt: settings_bt, isAvail: function () { return true; }, src: "settings.html", exeFn: showSettings },
-        "exit": { bt: exit_bt, isAvail: function () { return true; }, exeFn: exit },
         "search": { src: "search.html", exeFn: search }
     };
 
@@ -288,12 +287,6 @@ function showSettings() {
 
 function search() {
     maximize();
-}
-
-function exit(force) {
-    if (force || confirm("Are you sure you want to exit?"))
-        air.NativeApplication.nativeApplication.exit();
-    else return false;
 }
 
 function setFormInfo(fd, fc) {
