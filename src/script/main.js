@@ -2,7 +2,7 @@
 var version = {
     ver: "1.5.0",
     verString: "1.5 Beta",
-    verCount: 21 //22
+    verCount: 22
 };
 
 var onlineVer;
@@ -79,18 +79,13 @@ window.onload = function () {
 
     setTimeout(function () {
         sendRequest("get", gitBaseUrl + "ver.json", "", function (json) {
-            alert("...");
-            try {
-                var onlineVer = JSON.parse(json);
-            } catch (e) {
-                air.trace(e);
-            }
-            alert("...");
+            var onlineVer = JSON.parse(json);
             if (onlineVer.verCount > version.verCount) {
-                var msg = "A newer version(" + onlineVer.ver + ") is now available, click OK to update.";
+                var force = onlineVer.forceUpdate;
+                var msg = "A newer version(" + onlineVer.ver + ") is now available, " + (force ? "you'll have to update before you can continue using Analyzer." : "click OK to update.");
                 if (onlineVer.description)
                     msg += "\n\nDescription:\n" + onlineVer.description;
-                if (confirm(msg))
+                if ((force ? alert : confirm)(msg) || force)
                     update(onlineVer.ver);
             }
         });
@@ -385,6 +380,20 @@ function insertUnique(arr, value) {
 //--------------------------
 
 function update(ver) {
-    var updater = new air.Updater();
-    updater.update(new air.File(gitBaseUrl + "analyzer.air", ver));
+    wait(window);
+
+    var loader = new air.URLLoader();
+    loader.dataFormat = "binary";
+    var request = new air.URLRequest(gitBaseUrl + "analyzer.air");
+    loader.load(request);
+    loader.addEventListener("complete", function () {
+        var stream = new air.FileStream();
+        var file = appStorage.resolvePath("analyzer.air");
+        stream.open(file, "write");
+        stream.writeBytes(loader.data);
+        stream.close();
+
+        var updater = new air.Updater();
+        updater.update(file, ver);
+    });
 }
