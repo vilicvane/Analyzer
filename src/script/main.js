@@ -82,7 +82,7 @@ window.onload = function () {
             var onlineVer = JSON.parse(json);
             if (onlineVer.verCount > version.verCount) {
                 var force = onlineVer.forceUpdate;
-                var msg = "A newer version(" + onlineVer.ver + ") is now available, " + (force ? "you'll have to update before you can continue using Analyzer." : "click OK to update.");
+                var msg = "A newer version(" + onlineVer.verString + ") is now available, " + (force ? "you'll have to update before you can continue using Analyzer." : "click OK to update.");
                 if (onlineVer.description)
                     msg += "\n\nDescription:\n" + onlineVer.description;
                 if ((force ? alert : confirm)(msg) || force)

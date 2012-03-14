@@ -2,6 +2,6 @@
 	"ver": "1.5.0",
 	"verString": "1.5 Beta",
 	"verCount": 23,
-	"description": "",
+	"description": "1. Changed platform from HTA to Adobe AIR.\n2. Fixed some problems with new version of MyAIESEC.net.",
 	"forceUpdate": true
 }
