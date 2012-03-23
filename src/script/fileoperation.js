@@ -5,21 +5,6 @@ function writeFile(path, content) {
     var file = getFile(path);
 
     try {
-        /*
-        
-        var stream = new air.FileStream();
-        stream.open(file, "write");
-
-        content = content.replace(/\r?\n/g, "\r\n");
-
-        var bytes = air.ByteArray();
-        bytes.writeMultiByte(content, "utf-8");
-
-        stream.writeBytes(bytes, 0, bytes.length);
-
-        stream.close();
-        return true;
-        */
 
         var stream = new air.FileStream();
         stream.open(file, "write");

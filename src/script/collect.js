@@ -60,30 +60,32 @@ function collect(html, prgCallback, callback, rCount) {
         }
     }
 
-    function deal(html, isTN) {
-        var rightRE = /<div class="right-content .*?>\s*(<table(?: .*?)?>[\s\S]+?<\/table>)/;
-        var rightHTML = (rightRE.exec(html) || [])[1];
+}
 
-        var leftRE = /<div class="left-content .*?>\s*(<table(?: .*?)?>[\s\S]+?<\/table>)/;
-        var leftHTML = (leftRE.exec(html) || [])[1];
+function deal(html, isTN) {
+    var rightRE = /<div class="right-content .*?>\s*(<table(?: .*?)?>[\s\S]+?<\/table>)/;
+    var rightHTML = (rightRE.exec(html) || [])[1];
 
-        if (!rightHTML || !leftHTML)
-            return false;
+    var leftRE = /<div class="left-content .*?>\s*(<table(?: .*?)?>[\s\S]+?<\/table>)/;
+    var leftHTML = (leftRE.exec(html) || [])[1];
 
-        clCount++;
-        clData += "\n--------------------------------------------------";
+    if (!rightHTML || !leftHTML)
+        return false;
 
-        //right-content
-        (function () {
-            var temp = document.createElement("div");
-            temp.innerHTML = rightHTML.replace(/on\w+\s*=\s*".+?"/g, "");
-            var table = temp.firstChild;
-            var rows = table.rows;
-            clData += '\n>> Basic\n';
+    clCount++;
+    clData += "\n--------------------------------------------------";
 
-            if (isTN) {
-                var mobile = getText(rows[11].cells[0], true);
-                clData +=
+    //right-content
+    (function () {
+        var temp = document.createElement("div");
+        temp.innerHTML = rightHTML.replace(/on\w+\s*=\s*".+?"/g, "");
+        var table = temp.firstChild;
+        var rows = table.rows;
+        clData += '\n>> Basic\n';
+
+        if (isTN) {
+            var mobile = getText(rows[11].cells[0], true);
+            clData +=
                 ' > TN ID\n' +
                 getText(rows[1].cells[0], true) + '\n' +
                 ' > Raised By\n' +
@@ -96,10 +98,10 @@ function collect(html, prgCallback, callback, rCount) {
                 getText(rows[4].cells[1], true) + '\n' +
                 ' > Mobile\n' +
                 mobile + '\n';
-            }
-            else {
-                var mobile = getText(rows[14].cells[0], true);
-                clData +=
+        }
+        else {
+            var mobile = getText(rows[14].cells[0], true);
+            clData +=
                 ' > EP ID\n' +
                 getText(rows[1].cells[0], true) + '\n' +
                 ' > Raised By\n' +
@@ -112,60 +114,59 @@ function collect(html, prgCallback, callback, rCount) {
                 getText(rows[4].cells[1], true) + '\n' +
                 ' > Mobile\n' +
                 mobile + '\n';
-            }
-        })();
+        }
+    })();
 
-        //left-content
+    //left-content
+    (function () {
+        var temp = document.createElement("div");
+        temp.innerHTML = leftHTML.replace(/on\w+\s*=\s*".+?"/g, "");
+        var table = temp.firstChild;
+        var rows = table.rows;
+
         (function () {
-            var temp = document.createElement("div");
-            temp.innerHTML = leftHTML.replace(/on\w+\s*=\s*".+?"/g, "");
-            var table = temp.firstChild;
-            var rows = table.rows;
-
-            (function () {
-                var cell = rows[0].cells[0];
-                var fonts = cell.getElementsByTagName('font');
-                if (isTN)
-                    clData +=
+            var cell = rows[0].cells[0];
+            var fonts = cell.getElementsByTagName('font');
+            if (isTN)
+                clData +=
                     ' > Organisation Name\n' +
                     getText(fonts[0]) + '\n' +
                     ' > Organisational Position\n' +
                     getText(fonts[1]) + '\n' +
                     ' > Committee\n' +
                     getText(fonts[2]) + '\n';
-                else
-                    clData +=
+            else
+                clData +=
                     ' > EP Name\n' +
                     getText(fonts[0]) + '\n' +
                     ' > Committee\n' +
                     getText(fonts[1]) + '\n' +
                     ' > Country\n' +
                     getText(fonts[2]) + '\n';
-            })();
-
-            for (var i = 3; i < rows.length; i++) {
-                var row = rows[i];
-
-                var cells = row.cells;
-                if ((cells[0].getElementsByTagName('font')[0] || {}).className == 'heading-class')
-                    clData += "\n>> " + getText(cells[0]) + "\n";
-                else if (cells.length == 2) {
-                    var itemName = getText(cells[0]);
-                    clData += (itemName ? " > " + itemName + "\n" : "") + (getText(cells[1], true) || "-") + "\n";
-                }
-            }
         })();
 
-        return true;
+        for (var i = 3; i < rows.length; i++) {
+            var row = rows[i];
 
-        function getText(ele, ct) {
-            var text = ele.innerHTML.replace(/<.+?>/g, " ").replace(/&nbsp;/g, " ").replace(/>/g, "&gt;");  //.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
-            text = (text.match(/^\s*([\s\S]*?)\s*$/) || [null, ""])[1];
-            if (!text) return "";
-            if (ct && text.indexOf("\n") > 0)
-                text = text.replace(/\s*\n\s*/g, "\n");
-            text = text.replace(/\s+/g, " ");
-            return text;
+            var cells = row.cells;
+            if ((cells[0].getElementsByTagName('font')[0] || {}).className == 'heading-class')
+                clData += "\n>> " + getText(cells[0]) + "\n";
+            else if (cells.length == 2) {
+                var itemName = getText(cells[0]);
+                clData += (itemName ? " > " + itemName + "\n" : "") + (getText(cells[1], true) || "-") + "\n";
+            }
         }
+    })();
+
+    return true;
+
+    function getText(ele, ct) {
+        var text = ele.innerHTML.replace(/<.+?>/g, " ").replace(/&nbsp;/g, " ").replace(/>/g, "&gt;");  //.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
+        text = (text.match(/^\s*([\s\S]*?)\s*$/) || [null, ""])[1];
+        if (!text) return "";
+        if (ct && text.indexOf("\n") > 0)
+            text = text.replace(/\s*\n\s*/g, "\n");
+        text = text.replace(/\s+/g, " ");
+        return text;
     }
 }

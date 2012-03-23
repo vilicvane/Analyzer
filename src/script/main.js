@@ -83,7 +83,8 @@ window.onload = function () {
         "save": { bt: save_bt, isAvail: function () { return formCount > 0 && user.account; }, exeFn: saveData },
         "tools": { bt: tools_bt, isAvail: function () { return formCount > 0 && user.account; }, src: "tools.html", exeFn: showTools },
         "settings": { bt: settings_bt, isAvail: function () { return true; }, src: "settings.html", exeFn: showSettings },
-        "search": { src: "search.html", exeFn: search }
+        "search": { src: "search.html", exeFn: search },
+        "analysisDetails": { src: "analysisDetails.html", exeFn: function () { return true; } }
     };
 
     var current;
@@ -117,6 +118,14 @@ window.onload = function () {
         fns["import"].exec();
     else
         fns["settings"].exec();
+
+    document.addEventListener("keypress", function (e) {
+        //shift + ctrl + A
+        if (e.keyCode == 1)
+            fns["analysisDetails"].exec();
+    });
+
+    //fns["analysisDetails"].exec();
 
     //login();
 };
