@@ -1,0 +1,179 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>TN Form</title>
+    <link href="style/iframe.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+        #datefrom, #dateto { width: 80px; }
+        button { width: 80px; }
+    </style>
+    <script src="script/collect.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        //http://www.myaiesec.net/exchange/analysisDetails.do?operation=getTNFormDetails&committeeId=13426545&fromDate=01.01.2012&toDate=14.03.2012&cmbStatus=1&allFlag=1&program=GC
+        //http://www.myaiesec.net/exchange/analysisDetails.do?operation=getSNFormDetails&committeeId=13426545&fromDate=01.01.2012&toDate=14.03.2012&cmbStatus=1&allFlag=1&program=GC
+        //http://www.myaiesec.net/exchange/analysisDetails.do?operation=getTNFormDetails&committeeId=13426545&fromDate=01.01.2012&toDate=14.03.2012&cmbStatus=1&allFlag=1&program=GI
+        //http://www.myaiesec.net/exchange/analysisDetails.do?operation=getSNFormDetails&committeeId=13426545&fromDate=01.01.2012&toDate=14.03.2012&cmbStatus=1&allFlag=1&program=GI
+
+
+
+        window.onload = function () {
+            collect_bt.onclick = function () {
+                var isTN = collect_type.value == "TN";
+                var start = Number(id_from.value);
+                var end = Number(id_to.value);
+
+                if (!(start > 0) || (id_to.value && !(end > 0)))
+                    alert("Unexcepted id range.");
+                else if (!id_to.value)
+                    end = Infinity;
+
+                var obj = top.getAvailFile(top.docStorage, (isTN ? "tn" : "ep") + "-form-data(*).txt");
+                obj.browseForSave("Save");
+
+                obj.addEventListener("select", function (e) {
+                    top.wait(window);
+
+                    var file = e.target;
+                    var stream = new top.air.FileStream();
+                    stream.open(file, "write");
+
+                    startCollect(isTN, start, end, function (done, now) {
+                        if (done) {
+                            stream.close();
+                            alert("Done.");
+                            window.location.reload();
+                            return;
+                        }
+
+                        stream.writeUTFBytes(clData.replace(/\r?\n/g, "\r\n"));
+                        stream.close();
+                        stream.open(file, "append");
+                        clData = "";
+                        clCount = 0;
+
+                        current_id.innerHTML = now;
+                    });
+                });
+
+            };
+        };
+
+        function startCollect(isTN, start, end, callback) {
+
+            var i = start;
+            var count = end - start + 1;
+            var xhr;
+            var timeout;
+
+            if (count > 0) next();
+            else callback(true);
+
+            function next() {
+                var url = (
+                    isTN ?
+                    "http://www.myaiesec.net/exchange/viewtn.do?operation=executeAction&tnId={id}" :
+                    "http://www.myaiesec.net/exchange/viewep.do?operation=executeAction&epId={id}"
+                ).replace("{id}", i++);
+
+                var stopCount = 0;
+
+                connect();
+
+                function connect() {
+                    clearTimeout(timeout);
+                    xhr = top.sendRequest("get", url, "", function (text, status) {
+                        clearTimeout(timeout);
+
+                        var stop = status == 500 || text.indexOf("Unfortunately we are experiencing a temporary problem that prevents us from completing your request.") >= 0;
+
+                        if (stop)
+                            stopCount++;
+                        else
+                            stopCount = 0;
+
+                        var pass = text.indexOf("Form could not be loaded as it is in Incomplete Status.") >= 0;
+
+                        if (stopCount == 10)
+                            callback(true);
+                        else if (stop || pass || deal(text, isTN)) {
+                            callback(false, i);
+                            if (i <= end) next();
+                            else callback(true);
+                        }
+                        else connect();
+                    });
+                    timeout = setTimeout(reTry, 30000);
+                }
+
+                function reTry() {
+                    try {
+                        xhr.onreadystatechange = function () { };
+                        xhr.abort();
+                    }
+                    catch (e) { }
+                    top.statusBox.reset();
+                    connect();
+                }
+            }
+        }
+
+
+    </script>
+</head>
+<body>
+<div id="h200" class="holder200">
+    <div id="title" class="title">Collect Analysis Details</div>
+    <div class="field separator">
+        <div class="left">Type</div>
+        <div class="right">
+            <select id="collect_type">
+                <option>TN</option>
+                <option>EP</option>
+            </select>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="field separator">
+        <div class="left"></div>
+        <div class="right">ID range</div>
+        <div class="clear"></div>
+    </div>
+    <div class="field">
+        <div class="left">From<span class="required">*</span></div>
+        <div class="right">
+            <input id="id_from" value="100000001" />
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="field">
+        <div class="left">To</div>
+        <div class="right">
+            <input id="id_to" />
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="field">
+        <div class="left">Current</div>
+        <div id="current_id" class="right">
+            -
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="field separator">
+        <div class="single">
+            <div class="subtitle">Notice</div>
+            This is a hidden function of Analyzer and is not recommended for everyone,
+            because it will take a very long time to complete and data collected by everyone is not that different.
+        </div>
+    </div>
+    <div class="field separator button">
+        <div class="left"></div>
+        <div class="right">
+            <button id="collect_bt">Collect</button>
+        </div>
+        <div class="clear"></div>
+    </div>
+</div>
+</body>
+</html>
