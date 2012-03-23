@@ -75,33 +75,52 @@ function deal(html, isTN) {
     clCount++;
     clData += "\n--------------------------------------------------";
 
-    //right-content
-    (function () {
-        var temp = document.createElement("div");
-        temp.innerHTML = rightHTML.replace(/on\w+\s*=\s*".+?"/g, "");
-        var table = temp.firstChild;
-        var rows = table.rows;
-        clData += '\n>> Basic\n';
+    try {
+        //right-content
+        (function () {
+            var temp = document.createElement("div");
+            temp.innerHTML = rightHTML.replace(/on\w+\s*=\s*".+?"/g, "");
+            var table = temp.firstChild;
+            var rows = table.rows;
+            clData += '\n>> Basic\n';
 
-        if (isTN) {
-            var mobile = getText(rows[11].cells[0], true);
-            clData +=
+            if (isTN) {
+                var extra = 0;
+                if (!rows[2].cells[1])
+                    extra += 2;
+
+                var mobile = getText(rows[11 + extra].cells[0], true);
+
+                clData +=
                 ' > TN ID\n' +
-                getText(rows[1].cells[0], true) + '\n' +
+                getText(rows[1].cells[0], true) + '\n';
+
+                if (extra)
+                    clData +=
+                        ' > Is GPI\n' +
+                        'Yes\n';
+
+                clData +=
                 ' > Raised By\n' +
-                getText(rows[7].cells[0], true) + '\n' +
+                getText(rows[7 + extra].cells[0], true) + '\n' +
                 ' > Raised Date\n' +
-                getText(rows[9].cells[0], true) + '\n' +
+                getText(rows[9 + extra].cells[0], true) + '\n' +
                 ' > Status\n' +
-                getText(rows[2].cells[1], true) + '\n' +
+                getText(rows[2 + extra].cells[1], true) + '\n' +
                 ' > Exchange Type\n' +
-                getText(rows[4].cells[1], true) + '\n' +
+                getText(rows[4 + extra].cells[1], true) + '\n' +
                 ' > Mobile\n' +
                 mobile + '\n';
-        }
-        else {
-            var mobile = getText(rows[14].cells[0], true);
-            clData +=
+
+                var cby = rows[13 + extra];
+                if (cby)
+                    clData +=
+                        ' > Co-ordinated By\n' +
+                        getText(cby.cells[0], true) + '\n';
+            }
+            else {
+                var mobile = getText(rows[14].cells[0], true);
+                clData +=
                 ' > EP ID\n' +
                 getText(rows[1].cells[0], true) + '\n' +
                 ' > Raised By\n' +
@@ -114,49 +133,54 @@ function deal(html, isTN) {
                 getText(rows[4].cells[1], true) + '\n' +
                 ' > Mobile\n' +
                 mobile + '\n';
-        }
-    })();
+            }
+        })();
 
-    //left-content
-    (function () {
-        var temp = document.createElement("div");
-        temp.innerHTML = leftHTML.replace(/on\w+\s*=\s*".+?"/g, "");
-        var table = temp.firstChild;
-        var rows = table.rows;
-
+        //left-content
         (function () {
-            var cell = rows[0].cells[0];
-            var fonts = cell.getElementsByTagName('font');
-            if (isTN)
-                clData +=
+            var temp = document.createElement("div");
+            temp.innerHTML = leftHTML.replace(/on\w+\s*=\s*".+?"/g, "");
+            var table = temp.firstChild;
+            var rows = table.rows;
+
+            (function () {
+                var cell = rows[0].cells[0];
+                var fonts = cell.getElementsByTagName('font');
+                if (isTN)
+                    clData +=
                     ' > Organisation Name\n' +
                     getText(fonts[0]) + '\n' +
                     ' > Organisational Position\n' +
                     getText(fonts[1]) + '\n' +
                     ' > Committee\n' +
                     getText(fonts[2]) + '\n';
-            else
-                clData +=
+                else
+                    clData +=
                     ' > EP Name\n' +
                     getText(fonts[0]) + '\n' +
                     ' > Committee\n' +
                     getText(fonts[1]) + '\n' +
                     ' > Country\n' +
                     getText(fonts[2]) + '\n';
-        })();
+            })();
 
-        for (var i = 3; i < rows.length; i++) {
-            var row = rows[i];
+            for (var i = 3; i < rows.length; i++) {
+                var row = rows[i];
 
-            var cells = row.cells;
-            if ((cells[0].getElementsByTagName('font')[0] || {}).className == 'heading-class')
-                clData += "\n>> " + getText(cells[0]) + "\n";
-            else if (cells.length == 2) {
-                var itemName = getText(cells[0]);
-                clData += (itemName ? " > " + itemName + "\n" : "") + (getText(cells[1], true) || "-") + "\n";
+                var cells = row.cells;
+                if ((cells[0].getElementsByTagName('font')[0] || {}).className == 'heading-class')
+                    clData += "\n>> " + getText(cells[0]) + "\n";
+                else if (cells.length == 2) {
+                    var itemName = getText(cells[0]);
+                    clData += (itemName ? " > " + itemName + "\n" : "") + (getText(cells[1], true) || "-") + "\n";
+                }
             }
-        }
-    })();
+        })();
+    }
+    catch (e) {
+        top.air.trace(e);
+        return false;
+    }
 
     return true;
 

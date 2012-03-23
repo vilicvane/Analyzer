@@ -211,6 +211,7 @@ function search() {
                 data.add(c.name, c.value);
     })();
 
+    data.add('xchangetype', xchangetype.value);
     data.add('status', form_status.value);
 
     data.add('duration_from', duration_from.value);

@@ -1,8 +1,17 @@
 ﻿/// <reference path="AIRAliases.js" />
+/// <reference path="request.js" />
+/// <reference path="fileoperation.js" />
+
+/*
+    SELF REMINDER
+    DON'T FORGET TO CHANGE THE VERSION PROPERTY OF THESE FILES:
+    analyzer-app.xml
+    ver.json
+*/
 var version = {
-    ver: "1.5.1",
-    verString: "1.5.1 Beta",
-    verCount: 23
+    ver: "1.5.2",
+    verString: "1.5.2 Beta",
+    verCount: 24
 };
 
 var onlineVer;
@@ -23,8 +32,20 @@ var noConn = false;
 var defStatus = 'By <a href="http://www.vilic.info/" target="_blank" title="Click to visit VILIC\'s Blog (Chinese).">VILIC@CQU</a>';
 var accountFile = 'app:account';
 
-var debug = docStorage.resolvePath("vilic_analyzer_debug").exists;
-var gitBaseUrl = "https://raw.github.com/vilic/Analyzer/" + (debug ? "dev/" : "master/");
+var branch = "master";
+
+(function () {
+    var headFile = new air.File("C:\\VSProjects\\Analyzer\\Analyzer\\.git\\HEAD");
+    if (!headFile.exists) return;
+
+    var text = readFile(headFile);
+    var line = text.match(/ref: .+/)[0];
+    var b = line.match(/[^\/]+$/)[0];
+    if (b)
+        branch = b;
+})();
+
+var gitBaseUrl = "https://raw.github.com/vilic/Analyzer/" + branch;
 
 (function () {
     var info;
@@ -62,7 +83,8 @@ window.onload = function () {
 
     if (!docStorage.resolvePath("vilic_analyzer_mark").exists)
         cnzz.src = "http://www.vilic.info/aiesec/tnfa/cnzz.html?v=" + version.ver;
-
+        
+    document.title += " [" + version.verString + "]";
     setTimeout(function () {
         sendRequest("get", gitBaseUrl + "ver.json", "", function (json) {
             var onlineVer = JSON.parse(json);
@@ -249,7 +271,7 @@ function exportData() {
             str = str.replace(/^[\s\S]*[\r\n",][\s\S]*$/, function (m) {
                 return '"' + m.replace(/"/g, '""') + '"';
             });
-            str = str.replace(/^[\d\.]+$/g, function (m) {
+            str = str.replace(/^\+?\d+(\.\d+)?$/g, function (m) {
                 return '="' + m + '"';
             });
 

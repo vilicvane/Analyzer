@@ -1,7 +1,7 @@
 ﻿{
-	"ver": "1.5.1",
-	"verString": "1.5.1 Beta",
-	"verCount": 23,
-	"description": "1. Removed \"Exit\" menu item.",
+	"ver": "1.5.2",
+	"verString": "1.5.2 Beta",
+	"verCount": 24,
+	"description": "1. Added \"Programme\" option in search form field.\n2. Fixed a bug with GPI searching.\n3. Other changes.",
 	"forceUpdate": 21
 }

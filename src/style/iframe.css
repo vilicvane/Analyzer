@@ -25,7 +25,7 @@ a:hover { text-decoration: underline; }
 .holder400 .field input[type="text"] { width: 180px; }
 .holder200 .field input { width: 120px; }
 
-.field input[type="checkbox"], .field input[type="radio"] { position: relative; top: 2px; left: -4px; margin-right: -4px; }
+.field input[type="checkbox"], .field input[type="radio"] { position: relative; top: 2px; }
 
 .separator { border-top: solid 1px #CCCCCC; padding-top: 10px; margin-top: 10px; }
 
