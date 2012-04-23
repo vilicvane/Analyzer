@@ -45,7 +45,7 @@ var branch = "master";
         branch = b;
 })();
 
-var gitBaseUrl = "https://raw.github.com/vilic/Analyzer/" + branch;
+var gitBaseUrl = "https://raw.github.com/vilic/Analyzer/" + branch + "/";
 
 (function () {
     var info;
