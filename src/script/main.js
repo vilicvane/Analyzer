@@ -9,9 +9,9 @@
     ver.json
 */
 var version = {
-    ver: "1.5.2",
-    verString: "1.5.2 Beta",
-    verCount: 24
+    ver: "1.5.3",
+    verString: "1.5.3",
+    verCount: 25
 };
 
 var onlineVer;

@@ -1,6 +1,9 @@
-﻿var appStorage = air.File.applicationStorageDirectory;
+﻿//App目录对应的air.File对象
+var appStorage = air.File.applicationStorageDirectory;
+//Document目录对应的air.File对象
 var docStorage = air.File.documentsDirectory;
 
+//写文件的通用方法
 function writeFile(path, content) {
     var file = getFile(path);
 

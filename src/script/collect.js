@@ -72,17 +72,17 @@ function deal(html, isTN) {
     if (!rightHTML || !leftHTML)
         return false;
 
-    clCount++;
-    clData += "\n--------------------------------------------------";
+    var data = "";
 
     try {
         //right-content
         (function () {
             var temp = document.createElement("div");
             temp.innerHTML = rightHTML.replace(/on\w+\s*=\s*".+?"/g, "");
-            var table = temp.firstChild;
+
+            var table = temp.getElementsByTagName("table")[0];
             var rows = table.rows;
-            clData += '\n>> Basic\n';
+            data += '\n>> Basic\n';
 
             if (isTN) {
                 var extra = 0;
@@ -91,16 +91,16 @@ function deal(html, isTN) {
 
                 var mobile = getText(rows[11 + extra].cells[0], true);
 
-                clData +=
+                data +=
                 ' > TN ID\n' +
                 getText(rows[1].cells[0], true) + '\n';
 
                 if (extra)
-                    clData +=
+                    data +=
                         ' > Is GPI\n' +
                         'Yes\n';
 
-                clData +=
+                data +=
                 ' > Raised By\n' +
                 getText(rows[7 + extra].cells[0], true) + '\n' +
                 ' > Raised Date\n' +
@@ -114,13 +114,13 @@ function deal(html, isTN) {
 
                 var cby = rows[13 + extra];
                 if (cby)
-                    clData +=
+                    data +=
                         ' > Co-ordinated By\n' +
                         getText(cby.cells[0], true) + '\n';
             }
             else {
                 var mobile = getText(rows[14].cells[0], true);
-                clData +=
+                data +=
                 ' > EP ID\n' +
                 getText(rows[1].cells[0], true) + '\n' +
                 ' > Raised By\n' +
@@ -147,7 +147,7 @@ function deal(html, isTN) {
                 var cell = rows[0].cells[0];
                 var fonts = cell.getElementsByTagName('font');
                 if (isTN)
-                    clData +=
+                    data +=
                     ' > Organisation Name\n' +
                     getText(fonts[0]) + '\n' +
                     ' > Organisational Position\n' +
@@ -155,7 +155,7 @@ function deal(html, isTN) {
                     ' > Committee\n' +
                     getText(fonts[2]) + '\n';
                 else
-                    clData +=
+                    data +=
                     ' > EP Name\n' +
                     getText(fonts[0]) + '\n' +
                     ' > Committee\n' +
@@ -169,18 +169,22 @@ function deal(html, isTN) {
 
                 var cells = row.cells;
                 if ((cells[0].getElementsByTagName('font')[0] || {}).className == 'heading-class')
-                    clData += "\n>> " + getText(cells[0]) + "\n";
+                    data += "\n>> " + getText(cells[0]) + "\n";
                 else if (cells.length == 2) {
                     var itemName = getText(cells[0]);
-                    clData += (itemName ? " > " + itemName + "\n" : "") + (getText(cells[1], true) || "-") + "\n";
+                    data += (itemName ? " > " + itemName + "\n" : "") + (getText(cells[1], true) || "-") + "\n";
                 }
             }
         })();
     }
     catch (e) {
-        top.air.trace(e);
+        //top.writeFile("C:\\x.txt", html);
+        //top.air.trace(e);
         return false;
     }
+
+    clCount++;
+    clData += "\n--------------------------------------------------" + data;
 
     return true;
 
